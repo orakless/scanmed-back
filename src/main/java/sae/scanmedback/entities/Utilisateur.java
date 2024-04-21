@@ -7,33 +7,53 @@ import jakarta.persistence.*;
 @Table(name = "utilisateur")
 public class Utilisateur {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @Column(name = "pseudonyme")
     private String pseudonyme;
 
-    @Column(name = "mail")
+    @Column(name = "mail", unique = true)
     private String mail;
-
-    @ManyToOne
-    @JoinColumn(name="cart_id", nullable = false)
-    Ville domicile;
 
     @Column(name = "est_admin")
     boolean estAdmin;
 
+    @Column(name = "accepte_mails")
+    boolean accepteMails;
+
+    @Column(name = "mot_de_passe")
+    String motDePasse;
+
+    public Utilisateur() {};
+
     public Integer getId() { return this.id; }
 
     public String getPseudonyme() { return this.pseudonyme; }
+
     public void setPseudonyme(String pseudonyme) {
-        if (pseudonyme != null && pseudonyme.length() <= 32)
-            this.pseudonyme = pseudonyme;
+        this.pseudonyme = pseudonyme;
     }
 
+    public String getMotDePasse() {
+        return this.motDePasse;
+    }
+    public boolean isAccepteMails() {
+        return accepteMails;
+    }
+
+    public void setAccepteMails(boolean accepteMails) {
+        this.accepteMails = accepteMails;
+    }
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
+    }
     public String getMail() { return this.mail; }
 
-    public boolean estAdmin() { return this.estAdmin; }
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
 
-    public Ville getDomicile() { return this.domicile; }
+    public boolean estAdmin() { return this.estAdmin; }
 }

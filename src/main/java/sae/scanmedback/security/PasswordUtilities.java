@@ -3,7 +3,7 @@ package sae.scanmedback.security;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 public class PasswordUtilities {
-    private static Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(16, 32, 1, 1000000, 16);
+    private static final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
     public static String hashPassword(String password) {
         return encoder.encode(password);
