@@ -8,7 +8,8 @@ import jakarta.persistence.*;
 public class Utilisateur {
     @Id
     @Column(unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "utilisateur_seq", sequenceName = "utilisateur_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "utilisateur_seq")
     private Integer id;
 
     @Column(name = "pseudonyme")

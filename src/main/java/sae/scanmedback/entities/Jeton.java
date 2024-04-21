@@ -1,22 +1,24 @@
 package sae.scanmedback.entities;
 
 import jakarta.persistence.*;
+import sae.scanmedback.security.JetonsUtilities;
 
 @Entity
 @IdClass(JetonId.class)
-@Table(name = "jeton")
+@Table(name = "jetons")
 public class Jeton {
     public String getJeton() {
         return jeton;
     }
 
-    public void setJeton(String jeton) {
-        this.jeton = jeton;
-    }
-
     @Id
+    @Column(name = "jeton")
     private String jeton;
 
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "id_utilisateur", nullable = false)
+    Utilisateur utilisateur;
     public Utilisateur getUtilisateur() {
         return utilisateur;
     }
@@ -25,13 +27,12 @@ public class Jeton {
         this.utilisateur = utilisateur;
     }
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "id_utilisateur", nullable = false)
-    Utilisateur utilisateur;
-
     public String getNomAppareil() {
         return nomAppareil;
+    }
+
+    public void rerollJeton() {
+        this.jeton = JetonsUtilities.generateToken();
     }
 
     public void setNomAppareil(String nomAppareil) {
@@ -41,6 +42,5 @@ public class Jeton {
     @Column(name = "nom_appareil")
     String nomAppareil;
 
-    public Jeton() {
-    }
+    public Jeton() { rerollJeton(); }
 }

@@ -29,6 +29,6 @@ CREATE TABLE Jetons
     id_utilisateur  INTEGER,
     nom_appareil    VARCHAR(64),
     CONSTRAINT PK_Jeton PRIMARY KEY (jeton, id_utilisateur),
-    CONSTRAINT UC_Jeton_IdUtilisateur_NomAppareil UNIQUE (id_utilisateur, nom_appareil, jeton),
+    CONSTRAINT UC_Jeton_IdUtilisateur_NomAppareil UNIQUE (id_utilisateur, nom_appareil),
     CONSTRAINT FK_Utilisateur_Jeton FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id)
 );
