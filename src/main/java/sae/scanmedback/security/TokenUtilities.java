@@ -4,7 +4,7 @@ package sae.scanmedback.security;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-public class JetonsUtilities {
+public class TokenUtilities {
     private static final int TOKEN_LENGTH = 64; // must be divisible by 4
     private static final SecureRandom randomGenerator = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
@@ -13,6 +13,7 @@ public class JetonsUtilities {
         // Generate the random bytes
         randomGenerator.nextBytes(randomBytes);
         // Converts it in a better manner for HTTP requests
+        System.out.println(base64Encoder.encodeToString(randomBytes).length());
         return base64Encoder.encodeToString(randomBytes);
     }
 }

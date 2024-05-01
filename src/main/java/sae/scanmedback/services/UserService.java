@@ -1,31 +1,54 @@
 package sae.scanmedback.services;
 
-import com.sun.tools.jconsole.JConsoleContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import sae.scanmedback.entities.Utilisateur;
-import sae.scanmedback.repositories.UtilisateurRepository;
+
+import sae.scanmedback.api.dto.RegisterDTO;
+import sae.scanmedback.entities.User;
+import sae.scanmedback.repositories.UserRepository;
 import sae.scanmedback.security.PasswordUtilities;
+
 @Service
 @Transactional
 public class UserService implements IUserService {
-    @Autowired
-    UtilisateurRepository utilisateurRepository;
+    private final UserRepository userRepository;
 
-    @Override
-    public Utilisateur registerNewUtilisateur(Utilisateur newUtilisateur) {
-        newUtilisateur.setMotDePasse(PasswordUtilities.hashPassword(newUtilisateur.getMotDePasse()));
-        return utilisateurRepository.save(newUtilisateur);
+    public UserService(final UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Utilisateur login(String mail, String motDePasse) {
-        Utilisateur utilisateur = utilisateurRepository.findByMail(mail);
+    public User registerNewUser(RegisterDTO infos) {
+        User newUser = new User();
 
-        if (utilisateur == null || !PasswordUtilities.checkPassword(utilisateur.getMotDePasse(), motDePasse)) {
+        newUser.setUsername(infos.getUsername());
+        newUser.setEmail(infos.getEmail());
+        newUser.setAcceptsEmails(infos.getAcceptsEmails());
+        newUser.setPassword(PasswordUtilities.hashPassword(infos.getPassword()));
+
+        return userRepository.save(newUser);
+    }
+
+    @Override
+    public User login(String email, String password) {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null || !PasswordUtilities.checkPassword(user.getPassword(), password)) {
             return null;
         }
-        return utilisateur;
+        return user;
     }
+
+    public User loadUserByEmail(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) throw new UsernameNotFoundException("User with email not found.");
+
+        return user;
+    }
+
 }

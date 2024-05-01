@@ -3,36 +3,37 @@ package sae.scanmedback.services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sae.scanmedback.entities.Jeton;
-import sae.scanmedback.entities.JetonId;
-import sae.scanmedback.entities.Utilisateur;
-import sae.scanmedback.errors.AppareilAlreadyAuthenticatedException;
-import sae.scanmedback.repositories.JetonRepository;
-import sae.scanmedback.security.JetonsUtilities;
+import sae.scanmedback.entities.Token;
+import sae.scanmedback.entities.User;
+import sae.scanmedback.errors.DeviceAlreadyAuthenticatedException;
+import sae.scanmedback.repositories.TokenRepository;
 
 @Service
 @Transactional
 public class AuthService implements IAuthService {
-    @Autowired
-    JetonRepository jetonRepository;
+    private final TokenRepository tokenRepository;
 
-    @Override
-    public Jeton generateJeton(Utilisateur utilisateur, String nomAppareil) throws AppareilAlreadyAuthenticatedException {
-        if (jetonRepository.existsJetonByUtilisateurAndNomAppareil(utilisateur, nomAppareil))
-            throw new AppareilAlreadyAuthenticatedException("JAA.001;This device name is already used for this user.");
-
-        Jeton jeton = new Jeton();
-        jeton.setUtilisateur(utilisateur);
-        jeton.setNomAppareil(nomAppareil);
-
-        while (jetonRepository.existsJetonByUtilisateurAndJeton(utilisateur, jeton.getJeton())) {
-            jeton.rerollJeton();
-        }
-        return jetonRepository.save(jeton);
+    public AuthService(final TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
-    public boolean checkJeton(Utilisateur utilisateur, String jeton) {
-        return jetonRepository.existsJetonByUtilisateurAndJeton(utilisateur, jeton);
+    public Token generateToken(User user, String device) throws DeviceAlreadyAuthenticatedException {
+        if (tokenRepository.existsTokenByUserAndDevice(user, device))
+            throw new DeviceAlreadyAuthenticatedException("JAA.001;This device name is already used for this user.");
+
+        Token token = new Token();
+        token.setUser(user);
+        token.setDevice(device);
+
+        while (tokenRepository.existsTokenByUserAndToken(user, token.getToken())) {
+            token.rerollToken();
+        }
+        return tokenRepository.save(token);
+    }
+
+    @Override
+    public boolean checkToken(User user, String token) {
+        return tokenRepository.existsTokenByUserAndToken(user, token);
     }
 }

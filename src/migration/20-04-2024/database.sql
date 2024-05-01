@@ -1,34 +1,46 @@
-DROP TABLE IF EXISTS Ville CASCADE;
-DROP TABLE IF EXISTS Utilisateur CASCADE;
-DROP TABLE IF EXISTS Jetons;
-DROP SEQUENCE IF EXISTS utilisateur_seq;
+DROP TABLE IF EXISTS Cities CASCADE;
+DROP TABLE IF EXISTS Avatars CASCADE;
+DROP TABLE IF EXISTS Users CASCADE;
+DROP TABLE IF EXISTS Tokens;
+DROP SEQUENCE IF EXISTS user_seq;
 
-
-CREATE TABLE Ville
+CREATE TABLE Cities
 (
-    id            INTEGER PRIMARY KEY,
-    nom           VARCHAR(64) NOT NULL,
-    code_postal   VARCHAR(5) NOT NULL,
-    CONSTRAINT UC_Nom_CodePostal UNIQUE (nom, code_postal) -- les villes peuvent avoir le meme nom ou meme code postal, mais pas la meme combinaison des deux
+    id              INTEGER PRIMARY KEY,
+    name            VARCHAR(64) NOT NULL,
+    zip_code        VARCHAR(5) NOT NULL,
+    CONSTRAINT UC_Name_ZipCode UNIQUE (name, zip_code) -- les villes peuvent avoir le meme nom ou meme code postal, mais pas la meme combinaison des deux
 );
 
-CREATE SEQUENCE utilisateur_seq START 1;
-CREATE TABLE Utilisateur
+CREATE TABLE Avatars
 (
-    id            INTEGER PRIMARY KEY,
-    pseudonyme    VARCHAR(32),
-    mail          VARCHAR(320) NOT NULL UNIQUE, -- voir RFC 3696 pour la taille max des mails (https://datatracker.ietf.org/doc/html/rfc3696#section-3)
-    mot_de_passe  VARCHAR(97) NOT NULL,
-    accepte_mails BOOL DEFAULT False,
-    est_admin     BOOL DEFAULT False
+    id              INTEGER PRIMARY KEY
 );
 
-CREATE TABLE Jetons
+CREATE SEQUENCE user_seq START 1;
+CREATE TABLE Users
 (
-    jeton           VARCHAR(64),
-    id_utilisateur  INTEGER,
-    nom_appareil    VARCHAR(64),
-    CONSTRAINT PK_Jeton PRIMARY KEY (jeton, id_utilisateur),
-    CONSTRAINT UC_Jeton_IdUtilisateur_NomAppareil UNIQUE (id_utilisateur, nom_appareil),
-    CONSTRAINT FK_Utilisateur_Jeton FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id)
+    id              INTEGER PRIMARY KEY,
+    username        VARCHAR(31),
+    email           VARCHAR(319) NOT NULL UNIQUE, -- voir RFC 3696 pour la taille max des mails (https://datatracker.ietf.org/doc/html/rfc3696#section-3)
+    password        VARCHAR(256) NOT NULL,
+    accepts_emails  BOOL DEFAULT False,
+    is_admin        BOOL DEFAULT False,
+    id_avatar       INTEGER NOT NULL,
+    CONSTRAINT FK_Avatars_IdAvatar
+               FOREIGN KEY (id_avatar) REFERENCES Avatars(id)
+);
+
+
+CREATE TABLE Tokens
+(
+    token           VARCHAR(64),
+    user_id         INTEGER,
+    device          VARCHAR(64),
+    CONSTRAINT PK_Token
+               PRIMARY KEY (token, user_id),
+    CONSTRAINT UC_Token_UserId_Device
+               UNIQUE (user_id, device),
+    CONSTRAINT FK_Users_UserId
+               FOREIGN KEY (user_id) REFERENCES Users(id)
 );

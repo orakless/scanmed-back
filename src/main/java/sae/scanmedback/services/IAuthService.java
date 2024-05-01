@@ -1,11 +1,11 @@
 package sae.scanmedback.services;
 
-import sae.scanmedback.entities.Jeton;
-import sae.scanmedback.entities.Utilisateur;
-import sae.scanmedback.errors.AppareilAlreadyAuthenticatedException;
+import sae.scanmedback.entities.Token;
+import sae.scanmedback.entities.User;
+import sae.scanmedback.errors.DeviceAlreadyAuthenticatedException;
 
 public interface IAuthService {
-    Jeton generateJeton(Utilisateur utilisateur, String nomAppareil) throws AppareilAlreadyAuthenticatedException;
+    Token generateToken(User user, String device) throws DeviceAlreadyAuthenticatedException;
 
-    boolean checkJeton(Utilisateur utilisateur, String jeton);
+    boolean checkToken(User user, String token);
 }

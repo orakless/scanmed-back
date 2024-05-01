@@ -1,8 +1,13 @@
 package sae.scanmedback.services;
 
-import sae.scanmedback.entities.Utilisateur;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import sae.scanmedback.api.dto.RegisterDTO;
+import sae.scanmedback.entities.User;
 
 public interface IUserService {
-    Utilisateur registerNewUtilisateur(Utilisateur newUtilisateur);
-    Utilisateur login(String mail, String motDePasse);
+    User registerNewUser(RegisterDTO infos);
+
+    User loadUserByEmail(String email);
+    User login(String email, String password);
 }

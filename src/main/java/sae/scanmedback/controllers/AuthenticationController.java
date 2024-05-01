@@ -6,50 +6,45 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sae.scanmedback.api.dto.LoginDTO;
-import sae.scanmedback.entities.Utilisateur;
-import sae.scanmedback.errors.AppareilAlreadyAuthenticatedException;
+import sae.scanmedback.api.dto.RegisterDTO;
+import sae.scanmedback.entities.User;
+import sae.scanmedback.errors.DeviceAlreadyAuthenticatedException;
 import sae.scanmedback.api.response.ErrorResponse;
-import sae.scanmedback.repositories.JetonRepository;
-import sae.scanmedback.repositories.UtilisateurRepository;
 import sae.scanmedback.services.IAuthService;
 import sae.scanmedback.services.IUserService;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
-    @Autowired
-    UtilisateurRepository utilisateurRepository;
-    @Autowired
-    JetonRepository jetonRepository;
-    @Autowired
-    IUserService userService;
-    @Autowired
-    IAuthService authService;
+    private final IUserService userService;
+    private final IAuthService authService;
 
-    @PostMapping(path = "/register",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Utilisateur> register(@RequestBody Utilisateur utilisateur) {
+    public AuthenticationController(final IUserService userService, final IAuthService authService) {
+        this.userService = userService;
+        this.authService = authService;
+    }
+
+    @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> register(@RequestBody RegisterDTO infos) {
         try {
-            Utilisateur newUtilisateur = userService.registerNewUtilisateur(utilisateur);
-            return new ResponseEntity<>(newUtilisateur, HttpStatus.CREATED);
+            User newUser = userService.registerNewUser(infos);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping(path = "/login",
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> login(@RequestBody LoginDTO infos) {
         try {
-            Utilisateur loggedUtilisateur = userService.login(infos.getMail(), infos.getMotDePasse());
+            User loggedUser = userService.login(infos.getEmail(), infos.getPassword());
 
-            if (loggedUtilisateur == null)
+            if (loggedUser == null)
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-            return new ResponseEntity<>(authService.generateJeton(loggedUtilisateur, infos.getNomAppareil()).getJeton(), HttpStatus.CREATED);
-        } catch (AppareilAlreadyAuthenticatedException e) {
+            return new ResponseEntity<>(authService.generateToken(loggedUser, infos.getDevice()).getToken(),
+                    HttpStatus.CREATED);
+        } catch (DeviceAlreadyAuthenticatedException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.CONFLICT);
         }
     }

@@ -1,35 +1,35 @@
 package sae.scanmedback.api.dto;
 
 public class LoginDTO {
-    private String mail;
-    private String motDePasse;
+    private String email;
+    private String password;
 
-    private String nomAppareil;
+    private String device;
 
     public LoginDTO() {};
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getMotDePasse() {
-        return motDePasse;
+    public String getPassword() {
+        return password;
     }
 
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getNomAppareil() {
-        return nomAppareil;
+    public String getDevice() {
+        return device;
     }
 
-    public void setNomAppareil(String nomAppareil) {
-        this.nomAppareil = nomAppareil;
+    public void setDevice(String device) {
+        this.device = device;
     }
 }
 
