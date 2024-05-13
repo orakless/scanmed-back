@@ -40,7 +40,7 @@ public class AuthenticationController {
             User loggedUser = userService.login(infos.getEmail(), infos.getPassword());
 
             if (loggedUser == null)
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new ErrorResponse("UME.User not found"), HttpStatus.UNAUTHORIZED);
 
             return new ResponseEntity<>(authService.generateToken(loggedUser, infos.getDevice()).getToken(),
                     HttpStatus.CREATED);
