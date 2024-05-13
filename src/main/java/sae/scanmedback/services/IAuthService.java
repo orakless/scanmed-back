@@ -8,4 +8,6 @@ public interface IAuthService {
     Token generateToken(User user, String device) throws DeviceAlreadyAuthenticatedException;
 
     boolean checkToken(User user, String token);
+
+    void deleteToken(User user, String device);
 }

@@ -36,4 +36,9 @@ public class AuthService implements IAuthService {
     public boolean checkToken(User user, String token) {
         return tokenRepository.existsTokenByUserAndToken(user, token);
     }
+
+    @Override
+    public void deleteToken(User user, String device) {
+        tokenRepository.deleteByDeviceAndUser(device, user);
+    }
 }
