@@ -13,7 +13,6 @@ public class TokenUtilities {
         // Generate the random bytes
         randomGenerator.nextBytes(randomBytes);
         // Converts it in a better manner for HTTP requests
-        System.out.println(base64Encoder.encodeToString(randomBytes).length());
         return base64Encoder.encodeToString(randomBytes);
     }
 }

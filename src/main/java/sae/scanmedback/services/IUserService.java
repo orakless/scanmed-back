@@ -7,7 +7,7 @@ import sae.scanmedback.entities.User;
 
 public interface IUserService {
     User registerNewUser(RegisterDTO infos);
-
     User loadUserByEmail(String email);
     User login(String email, String password);
+    void deleteUserByEmail(String email);
 }

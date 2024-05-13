@@ -8,7 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import sae.scanmedback.api.dto.RegisterDTO;
+import sae.scanmedback.entities.Token;
 import sae.scanmedback.entities.User;
+import sae.scanmedback.repositories.TokenRepository;
 import sae.scanmedback.repositories.UserRepository;
 import sae.scanmedback.security.PasswordUtilities;
 
@@ -16,9 +18,10 @@ import sae.scanmedback.security.PasswordUtilities;
 @Transactional
 public class UserService implements IUserService {
     private final UserRepository userRepository;
-
-    public UserService(final UserRepository userRepository) {
+    private final TokenRepository tokenRepository;
+    public UserService(final UserRepository userRepository, final TokenRepository tokenRepository) {
         this.userRepository = userRepository;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
@@ -51,4 +54,12 @@ public class UserService implements IUserService {
         return user;
     }
 
+    public void deleteUserByEmail(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) throw new UsernameNotFoundException("User not found");
+
+        tokenRepository.deleteTokensByUser(user);
+        userRepository.deleteUserByEmail(email);
+    }
 }

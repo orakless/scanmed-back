@@ -10,4 +10,5 @@ public interface TokenRepository extends JpaRepository<Token, Integer>{
     boolean existsTokenByUserAndToken(User user, String token);
     boolean existsTokenByUserAndDevice(User user, String device);
     void deleteByDeviceAndUser(String device, User user);
+    void deleteTokensByUser(User user);
 }
