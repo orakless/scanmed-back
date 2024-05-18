@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sae.scanmedback.api.dto.LoginDTO;
 import sae.scanmedback.api.dto.RegisterDTO;
+import sae.scanmedback.api.response.IResponse;
 import sae.scanmedback.api.response.ValidResponse;
 import sae.scanmedback.api.response.data.LoginData;
 import sae.scanmedback.entities.User;
@@ -27,7 +28,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> register(@RequestBody RegisterDTO infos) {
+    public ResponseEntity<IResponse> register(@RequestBody RegisterDTO infos) {
         try {
             User newUser = userService.registerNewUser(infos);
             return new ResponseEntity<>(
@@ -41,7 +42,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> login(@RequestBody LoginDTO infos) {
+    public ResponseEntity<IResponse> login(@RequestBody LoginDTO infos) {
         try {
             User loggedUser = userService.login(infos.getEmail(), infos.getPassword());
 
