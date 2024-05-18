@@ -1,15 +1,15 @@
 package sae.scanmedback.services;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import sae.scanmedback.api.dto.EditDTO;
 import sae.scanmedback.api.dto.RegisterDTO;
-import sae.scanmedback.entities.Token;
 import sae.scanmedback.entities.User;
+import sae.scanmedback.errors.EmailAlreadyUsedException;
+import sae.scanmedback.errors.EmptyDTOException;
+import sae.scanmedback.errors.InvalidPasswordException;
 import sae.scanmedback.repositories.TokenRepository;
 import sae.scanmedback.repositories.UserRepository;
 import sae.scanmedback.security.PasswordUtilities;
@@ -25,13 +25,15 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User registerNewUser(RegisterDTO infos) {
+    public User registerNewUser(RegisterDTO infos) throws InvalidPasswordException {
         User newUser = new User();
 
         newUser.setUsername(infos.getUsername());
         newUser.setEmail(infos.getEmail());
         newUser.setAcceptsEmails(infos.getAcceptsEmails());
-        newUser.setPassword(PasswordUtilities.hashPassword(infos.getPassword()));
+        newUser.setPassword(
+                PasswordUtilities.hashPassword(
+                        PasswordUtilities.validatePassword(infos.getPassword())));
 
         return userRepository.save(newUser);
     }
@@ -57,9 +59,42 @@ public class UserService implements IUserService {
     public void deleteUserByEmail(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
 
-        if (user == null) throw new UsernameNotFoundException("User not found");
+        if (user == null) throw new UsernameNotFoundException("UNF;User not found");
 
         tokenRepository.deleteTokensByUser(user);
         userRepository.deleteUserByEmail(email);
+    }
+
+    public void editUser(String email, EditDTO infos) throws EmptyDTOException, UsernameNotFoundException, EmailAlreadyUsedException, InvalidPasswordException {
+        if (infos.isEmpty())
+            throw new EmptyDTOException("EDT;DTO is empty");
+
+        User user = userRepository.findByEmail(email);
+
+        if (user == null)
+            throw new UsernameNotFoundException("UNF;User not found");
+
+        if (infos.getAcceptsEmails() != null)
+            user.setAcceptsEmails(infos.getAcceptsEmails());
+
+        if (infos.getEmail() != null) {
+            if (userRepository.findByEmail(infos.getEmail()) == null) {
+                user.setEmail(email);
+            } else throw new EmailAlreadyUsedException("EAU;Email already used");
+        }
+
+        if (infos.getUsername() != null) {
+            user.setUsername(infos.getUsername());
+        }
+
+        if (infos.getPassword() != null) {
+            user.setPassword(
+                    PasswordUtilities.hashPassword(
+                            PasswordUtilities.validatePassword(infos.getPassword())
+                    )
+            );
+        }
+
+        userRepository.save(user);
     }
 }

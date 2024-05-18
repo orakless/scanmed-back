@@ -1,22 +1,24 @@
 package sae.scanmedback.api.response;
 
-public class ErrorResponse implements IResponse {
-
+public class ValidResponse implements IResponse {
     private final String status;
-
+    private final Object data;
     private final String message;
-    public ErrorResponse(String errorMessage) {
-        String[] parsedError = errorMessage.split(";");
-        this.status = parsedError[0];
-        this.message = parsedError[1];
+
+    public ValidResponse(String status, Object data, String message) {
+        this.status = status;
+        this.data = data;
+        this.message = message;
     }
 
     public String getStatus() {
         return status;
     }
+
     public Object getData() {
-        return null;
+        return data;
     }
+
     public String getMessage() {
         return message;
     }
