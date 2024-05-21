@@ -15,7 +15,7 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     @SequenceGenerator(name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-    private Integer id;
+    private int id;
 
     @Column(name = "username")
     private String username;
@@ -24,7 +24,7 @@ public class User implements UserDetails {
     private String email;
 
     @Column(name = "is_admin")
-    boolean isAdmin;
+    private boolean isAdmin;
 
     public void setUsername(String username) {
         this.username = username;
@@ -47,10 +47,10 @@ public class User implements UserDetails {
     }
 
     @Column(name = "accepts_emails")
-    boolean acceptsEmails;
+    private boolean acceptsEmails;
 
     @Column(name = "password")
-    String password;
+    private String password;
 
     public User() {};
 
