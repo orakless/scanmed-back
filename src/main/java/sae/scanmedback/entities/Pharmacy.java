@@ -16,7 +16,7 @@ public class Pharmacy {
     City city;
 
     @Column(name = "number")
-    private int number;
+    private String number;
 
     @Column(name = "street")
     private String street;
@@ -26,10 +26,7 @@ public class Pharmacy {
     public int getId() {
         return id;
     }
-    public City getCity() {
-        return city;
-    }
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
