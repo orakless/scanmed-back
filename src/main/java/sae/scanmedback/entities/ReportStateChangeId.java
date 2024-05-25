@@ -3,7 +3,7 @@ package sae.scanmedback.entities;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class ReportStateChangesId implements Serializable {
+public class ReportStateChangeId implements Serializable {
     private Report report;
 
     private Timestamp actionDate;
@@ -28,7 +28,7 @@ public class ReportStateChangesId implements Serializable {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null) return false;
-        if (!(object instanceof ReportStateChangesId otherId)) return false;
+        if (!(object instanceof ReportStateChangeId otherId)) return false;
 
         return otherId.report == this.report
                 && otherId.actionDate.equals(this.actionDate);

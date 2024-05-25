@@ -5,8 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import sae.scanmedback.entities.City;
+import sae.scanmedback.entities.Medecine;
 import sae.scanmedback.entities.Pharmacy;
 import sae.scanmedback.repositories.CityRepository;
+import sae.scanmedback.repositories.MedecineRepository;
+import sae.scanmedback.repositories.PharmacyRepository;
 import sae.scanmedback.repositories.paginated.CityPaginatedRepository;
 import sae.scanmedback.repositories.paginated.PharmacyPaginatedRepository;
 
@@ -20,13 +23,18 @@ public class DataService implements IDataService {
     private final CityPaginatedRepository cityPaginatedRepository;
     private final CityRepository cityRepository;
     private final PharmacyPaginatedRepository pharmacyPaginatedRepository;
-
+    private final PharmacyRepository pharmacyRepository;
+    private final MedecineRepository medecineRepository;
     public DataService(CityPaginatedRepository cityPaginatedRepository,
                        PharmacyPaginatedRepository pharmacyPaginatedRepository,
-                       CityRepository cityRepository) {
+                       CityRepository cityRepository,
+                       PharmacyRepository pharmacyRepository,
+                       MedecineRepository medecineRepository) {
         this.cityPaginatedRepository = cityPaginatedRepository;
         this.cityRepository = cityRepository;
         this.pharmacyPaginatedRepository = pharmacyPaginatedRepository;
+        this.pharmacyRepository = pharmacyRepository;
+        this.medecineRepository = medecineRepository;
     }
 
     @Override
@@ -49,5 +57,25 @@ public class DataService implements IDataService {
             throw new NoSuchElementException("INF;Could not find the city.");
         }
         return pharmacyPaginatedRepository.findAllByCity(city.get(), PageRequest.of(page, 5));
+    }
+
+    @Override
+    public Pharmacy getPharmacyFromId(int pharmacyId) throws NoSuchElementException {
+        Optional<Pharmacy> pharmacy = pharmacyRepository.findById(pharmacyId);
+
+        if (pharmacy.isEmpty())
+            throw new NoSuchElementException("INF;Could not find the pharmacy.");
+
+        return pharmacy.get();
+    }
+
+    @Override
+    public Medecine getMedecineFromCIP(String CIP) throws NoSuchElementException {
+        Optional<Medecine> medecine = medecineRepository.findByCIP(CIP);
+
+        if (medecine.isEmpty())
+            throw new NoSuchElementException("INF;Could not find the medecine.");
+
+        return medecine.get();
     }
 }

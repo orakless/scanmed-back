@@ -1,5 +1,6 @@
 package sae.scanmedback.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 
@@ -12,7 +13,7 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "report_seq")
     private int id;
 
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -22,7 +23,7 @@ public class Report {
     private Pharmacy pharmacy;
 
     @ManyToOne
-    @JoinColumn(name = "CIP", nullable = false)
+    @JoinColumn(name = "medecine_CIP", nullable = false)
     private Medecine medecine;
 
     @Column(name = "submission_date")

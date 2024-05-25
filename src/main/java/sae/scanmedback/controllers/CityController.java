@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import sae.scanmedback.api.response.ErrorResponse;
 import sae.scanmedback.api.response.IResponse;
 import sae.scanmedback.api.response.ValidResponse;
+import sae.scanmedback.api.response.data.PageData;
 import sae.scanmedback.entities.City;
 import sae.scanmedback.entities.Pharmacy;
 import sae.scanmedback.services.IDataService;
@@ -29,23 +30,33 @@ public class CityController {
                                                   @RequestParam(defaultValue = "desc") String order) {
         try {
             Page<City> cities = dataService.getAllCities(page, sort, order);
+            PageData<City> data = new PageData<>(
+                    cities.getContent(),
+                    cities.getTotalPages(),
+                    cities.getPageable().getPageNumber()
+            );
             return new ResponseEntity<>(new ValidResponse(
                     "success",
-                    cities,
+                    data,
                     null), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping(path = "{id}/pharmacies")
+    @GetMapping(path = "/{id}/pharmacies")
     public ResponseEntity<IResponse> getAllPharmaciesFromCity(@PathVariable(name = "id") int cityId,
                                                               @RequestParam int page) {
         try {
             Page<Pharmacy> pharmacies = dataService.getAllPharmaciesFromCity(page, cityId);
+            PageData<Pharmacy> data = new PageData<>(
+                    pharmacies.getContent(),
+                    pharmacies.getTotalPages(),
+                    pharmacies.getPageable().getPageNumber()
+            );
             return new ResponseEntity<>(new ValidResponse(
                     "success",
-                    pharmacies,
+                    data,
                     null), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);

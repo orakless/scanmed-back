@@ -6,9 +6,9 @@ import sae.scanmedback.entities.subtypes.ReportState;
 import java.sql.Timestamp;
 
 @Entity
-@IdClass(ReportStateChangesId.class)
-@Table(name = "ReportsStateChanges")
-public class ReportStateChanges {
+@IdClass(ReportStateChangeId.class)
+@Table(name = "reportsstatechanges")
+public class ReportStateChange {
     @Id
     @ManyToOne
     @JoinColumn(name = "report_id", nullable = false)
@@ -17,14 +17,15 @@ public class ReportStateChanges {
     @Id
     @Column(name = "action_date", nullable = false)
     private Timestamp actionDate;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "old_state")
     private ReportState oldState;
 
-    @Column(name = "new_state")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "new_state", nullable = false)
     private ReportState newState;
 
-    public ReportStateChanges() {}
+    public ReportStateChange() {}
 
     public Report getReport() {
         return report;
