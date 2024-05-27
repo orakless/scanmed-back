@@ -1,6 +1,7 @@
 package sae.scanmedback.controllers;
 
 
+import jakarta.persistence.Index;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,7 @@ import sae.scanmedback.api.response.ErrorResponse;
 import sae.scanmedback.api.response.IResponse;
 import sae.scanmedback.api.response.ValidResponse;
 import sae.scanmedback.api.response.data.PageData;
-import sae.scanmedback.entities.Medecine;
-import sae.scanmedback.entities.Pharmacy;
-import sae.scanmedback.entities.Report;
-import sae.scanmedback.entities.User;
+import sae.scanmedback.entities.*;
 import sae.scanmedback.services.IDataService;
 import sae.scanmedback.services.IReportService;
 import sae.scanmedback.services.IUserService;
@@ -47,18 +45,40 @@ public class ReportController {
         try {
             User user = userService.loadUserByEmail((String) userAuth.getPrincipal());
             Page<Report> reports = reportService.getAllReportsFrom(user, page);
-            PageData<Report> data = new PageData<>(
-                    reports.getContent(),
-                    reports.getTotalPages(),
-                    reports.getPageable().getPageNumber()
-            );
+            PageData<Report> data = new PageData<>(reports);
             return new ResponseEntity<>(new ValidResponse(
                     "success",
                     data,
                     null), HttpStatus.OK);
 
-        } catch (Exception e) {
+        } catch(IndexOutOfBoundsException | UsernameNotFoundException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "{id}/history",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<IResponse> getReportStateHistory(@PathVariable(name = "id") int reportId,
+                                                           @RequestParam int page) {
+        Authentication userAuth = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            User user = userService.loadUserByEmail((String) userAuth.getPrincipal());
+            Report report = reportService.getReport(reportId, user);
+            Page<ReportStateChange> reportStateChanges = reportService.getReportHistory(report, page);
+            PageData<ReportStateChange> data = new PageData<>(reportStateChanges);
+            return new ResponseEntity<>(new ValidResponse(
+                    "success",
+                    data,
+                    null), HttpStatus.OK
+            );
+        } catch (NoSuchElementException | IndexOutOfBoundsException | UsernameNotFoundException e) {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

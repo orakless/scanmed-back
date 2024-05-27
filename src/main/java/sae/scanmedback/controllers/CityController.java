@@ -15,6 +15,8 @@ import sae.scanmedback.entities.City;
 import sae.scanmedback.entities.Pharmacy;
 import sae.scanmedback.services.IDataService;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/city")
 public class CityController {
@@ -30,17 +32,16 @@ public class CityController {
                                                   @RequestParam(defaultValue = "desc") String order) {
         try {
             Page<City> cities = dataService.getAllCities(page, sort, order);
-            PageData<City> data = new PageData<>(
-                    cities.getContent(),
-                    cities.getTotalPages(),
-                    cities.getPageable().getPageNumber()
-            );
+            PageData<City> data = new PageData<>(cities);
             return new ResponseEntity<>(new ValidResponse(
                     "success",
                     data,
                     null), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -49,17 +50,16 @@ public class CityController {
                                                               @RequestParam int page) {
         try {
             Page<Pharmacy> pharmacies = dataService.getAllPharmaciesFromCity(page, cityId);
-            PageData<Pharmacy> data = new PageData<>(
-                    pharmacies.getContent(),
-                    pharmacies.getTotalPages(),
-                    pharmacies.getPageable().getPageNumber()
-            );
+            PageData<Pharmacy> data = new PageData<>(pharmacies);
             return new ResponseEntity<>(new ValidResponse(
                     "success",
                     data,
                     null), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (NoSuchElementException | IndexOutOfBoundsException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
