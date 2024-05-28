@@ -10,7 +10,7 @@ import sae.scanmedback.errors.InvalidPasswordException;
 
 public interface IUserService {
     User registerNewUser(RegisterDTO infos) throws InvalidPasswordException;
-    User loadUserByEmail(String email);
+    User loadUserByEmail(String email) throws UsernameNotFoundException;
     User login(String email, String password);
     void deleteUserByEmail(String email);
     void editUser(String email, EditDTO infos) throws EmptyDTOException, UsernameNotFoundException, EmailAlreadyUsedException, InvalidPasswordException;
