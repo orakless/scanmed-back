@@ -5,13 +5,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import sae.scanmedback.api.response.IResponse;
 import sae.scanmedback.api.response.ValidResponse;
 import sae.scanmedback.api.response.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import sae.scanmedback.api.dto.EditDTO;
 import sae.scanmedback.api.dto.RevokeDTO;
+import sae.scanmedback.api.response.data.UserData;
 import sae.scanmedback.entities.User;
+import sae.scanmedback.errors.EmailAlreadyUsedException;
+import sae.scanmedback.errors.EmptyDTOException;
+import sae.scanmedback.errors.InvalidPasswordException;
 import sae.scanmedback.services.IAuthService;
 import sae.scanmedback.services.IUserService;
 
@@ -61,8 +66,10 @@ public class UserController {
         Authentication userAuth = SecurityContextHolder.getContext().getAuthentication();
         try {
            userService.editUser((String) userAuth.getPrincipal(), infos);
-        } catch (Exception e) {
+        } catch (EmptyDTOException | UsernameNotFoundException | EmailAlreadyUsedException | InvalidPasswordException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ErrorResponse("UNK;Could not edit user informations."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<>(
