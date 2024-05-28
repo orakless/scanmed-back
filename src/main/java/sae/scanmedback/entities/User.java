@@ -46,11 +46,26 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public boolean acceptsEmails() {
+        return acceptsEmails;
+    }
+
     @Column(name = "accepts_emails")
     private boolean acceptsEmails;
 
     @Column(name = "password")
     private String password;
+
+    public int getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(int avatar) {
+        this.avatar = avatar;
+    }
+
+    @Column(name = "avatar_id", nullable = true)
+    private int avatar;
 
     public User() {};
 
