@@ -26,7 +26,7 @@ public class UserController {
         this.authService = authService;
     }
 
-    @PostMapping(path = "revoke",
+    @DeleteMapping(path = "revoke",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<IResponse> revoke(@RequestBody RevokeDTO infos) {
@@ -42,7 +42,7 @@ public class UserController {
                 HttpStatus.OK);
     }
 
-    @GetMapping(path = "delete",
+    @DeleteMapping(path = "delete",
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<IResponse> delete() {
         Authentication userAuth = SecurityContextHolder.getContext().getAuthentication();
@@ -54,7 +54,7 @@ public class UserController {
                 HttpStatus.OK);
     }
 
-    @PostMapping(path = "edit",
+    @PatchMapping(path = "edit",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<IResponse> edit(@RequestBody EditDTO infos) {
