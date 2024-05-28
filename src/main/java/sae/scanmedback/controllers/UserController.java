@@ -76,4 +76,21 @@ public class UserController {
                 new ValidResponse("success", null, "User modified"),
                 HttpStatus.OK);
     }
+
+    @GetMapping(path = "infos",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<IResponse> infos() {
+        Authentication userAuth = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            User user = userService.loadUserByEmail((String) userAuth.getPrincipal());
+            return new ResponseEntity<>(
+                    new ValidResponse("success",
+                            new UserData(user.getDisplayName(), user.getUsername(), user.acceptsEmails(), user.getAvatar()),
+                            null), HttpStatus.OK);
+        } catch (UsernameNotFoundException e) {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ErrorResponse("UNK;Could not edit user informations."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
