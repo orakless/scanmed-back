@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 @Table(name = "Cities")
 public class City {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(unique = true, nullable = false)
+    @SequenceGenerator(name = "city_seq", sequenceName = "city_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_seq")
+    private int id;
 
     @Column(name = "name")
     private String name;
@@ -15,9 +17,9 @@ public class City {
     @Column(name = "zip_code")
     private String zipCode;
 
-    public Integer getId() { return this.id; }
+    public int getId() { return this.id; }
 
-    public String getNom() { return this.name; }
+    public String getName() { return this.name; }
 
-    public String getCodePostal() { return this.zipCode; }
+    public String getZipCode() { return this.zipCode; }
 }
