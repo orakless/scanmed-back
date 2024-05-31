@@ -70,6 +70,16 @@ public class DataService implements IDataService {
     }
 
     @Override
+    public City getCityFromId(int cityId) throws NoSuchElementException {
+        Optional<City> city = cityRepository.findById(cityId);
+
+        if (city.isEmpty())
+            throw new NoSuchElementException("INF;Could not find the city.");
+
+        return city.get();
+    }
+
+    @Override
     public Medecine getMedecineFromCIP(String CIP) throws NoSuchElementException {
         Optional<Medecine> medecine = medecineRepository.findByCIP(CIP);
 

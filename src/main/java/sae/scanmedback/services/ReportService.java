@@ -3,6 +3,7 @@ package sae.scanmedback.services;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import sae.scanmedback.entities.*;
@@ -41,7 +42,7 @@ public class ReportService implements IReportService {
         if (page < 0)
             throw new IndexOutOfBoundsException("PIN;Page index negative");
 
-        return reportPaginatedRepository.findAllByUser(user, PageRequest.of(page, 5));
+        return reportPaginatedRepository.findAllByUser(user, PageRequest.of(page, 5, Sort.by("submission_date").descending()));
     }
 
     @Override
@@ -79,6 +80,16 @@ public class ReportService implements IReportService {
         if (page < 0)
             throw new IndexOutOfBoundsException("PIN;Page index negative");
 
-        return reportStateChangePaginatedRepository.findAllByReport(report, PageRequest.of(page, 5));
+        return reportStateChangePaginatedRepository.findAllByReport(report, PageRequest.of(page, 5, Sort.by("action_date").descending()));
+    }
+
+    @Override
+    public ReportStateChange getLastChange(Report report) throws NoSuchElementException {
+        Optional<ReportStateChange> rsc = reportStateChangeRepository.findTopByReportOrderByActionDate(report);
+
+        if (rsc.isEmpty())
+            throw new NoSuchElementException("INF;Could not find any state change.");
+
+        return rsc.get();
     }
 }

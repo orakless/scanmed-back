@@ -18,11 +18,15 @@ public class Pharmacy {
     @Column(name = "number")
     private String number;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "street")
     private String street;
 
     public Pharmacy() {}
 
+    public String getName() { return name; }
     public int getId() {
         return id;
     }

@@ -13,11 +13,16 @@ public class PageData<T> {
 
     boolean isLastPage;
 
-    public PageData(Page<T> page) {
-        this.items = page.getContent();
-        this.totalPageNumber = page.getTotalPages();
-        this.currentPage = page.getPageable().getPageNumber();
+
+    public PageData(List<T> items, int totalPageNumber, int currentPage) {
+        this.items = items;
+        this.totalPageNumber = totalPageNumber;
+        this.currentPage = currentPage;
         this.isLastPage = totalPageNumber - 1 == currentPage;
+    }
+
+    public PageData(Page<T> page) {
+        this(page.getContent(), page.getTotalPages(), page.getPageable().getPageNumber());
     }
 
     public List<T> getItems() {

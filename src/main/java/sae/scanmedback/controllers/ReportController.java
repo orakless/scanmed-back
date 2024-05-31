@@ -16,10 +16,13 @@ import sae.scanmedback.api.response.ErrorResponse;
 import sae.scanmedback.api.response.IResponse;
 import sae.scanmedback.api.response.ValidResponse;
 import sae.scanmedback.api.response.data.PageData;
+import sae.scanmedback.api.response.data.ReportStateChangeDTO;
+import sae.scanmedback.api.response.data.ResponseReportDTO;
 import sae.scanmedback.entities.*;
 import sae.scanmedback.services.IDataService;
 import sae.scanmedback.services.IReportService;
 import sae.scanmedback.services.IUserService;
+import sae.scanmedback.utilities.ConversionUtilities;
 
 import javax.print.attribute.standard.Media;
 import java.util.NoSuchElementException;
@@ -30,7 +33,6 @@ public class ReportController {
     private final IUserService userService;
     private final IDataService dataService;
     private final IReportService reportService;
-
     public ReportController(IUserService userService,
                             IDataService dataService,
                             IReportService reportService) {
@@ -45,7 +47,7 @@ public class ReportController {
         try {
             User user = userService.loadUserByEmail((String) userAuth.getPrincipal());
             Page<Report> reports = reportService.getAllReportsFrom(user, page);
-            PageData<Report> data = new PageData<>(reports);
+            PageData<ResponseReportDTO> data = ConversionUtilities.getReportPageData(reports, reportService);
             return new ResponseEntity<>(new ValidResponse(
                     "success",
                     data,
@@ -68,7 +70,7 @@ public class ReportController {
             User user = userService.loadUserByEmail((String) userAuth.getPrincipal());
             Report report = reportService.getReport(reportId, user);
             Page<ReportStateChange> reportStateChanges = reportService.getReportHistory(report, page);
-            PageData<ReportStateChange> data = new PageData<>(reportStateChanges);
+            PageData<ReportStateChangeDTO> data = ConversionUtilities.getReportSCPageData(reportStateChanges);
             return new ResponseEntity<>(new ValidResponse(
                     "success",
                     data,
@@ -82,7 +84,7 @@ public class ReportController {
         }
     }
 
-    @PutMapping(path = "/new",
+    @PostMapping(path = "/new",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<IResponse> newReport(@RequestBody NewReportDTO infos) {
