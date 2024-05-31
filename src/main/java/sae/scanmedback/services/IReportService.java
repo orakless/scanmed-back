@@ -2,6 +2,7 @@ package sae.scanmedback.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import sae.scanmedback.api.response.data.ReportStateChangeDTO;
 import sae.scanmedback.entities.*;
 
 import java.util.NoSuchElementException;
@@ -15,4 +16,7 @@ public interface IReportService {
     void addReport(User user, Pharmacy pharmacy, Medecine medecine);
     Page<ReportStateChange> getReportHistory(Report report, int page)
             throws IndexOutOfBoundsException;
+
+    ReportStateChange getLastChange(Report report)
+            throws NoSuchElementException;
 }

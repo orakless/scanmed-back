@@ -18,6 +18,9 @@ public interface IDataService {
     Pharmacy getPharmacyFromId(int pharmacyId)
             throws NoSuchElementException;
 
+    City getCityFromId(int cityId)
+            throws NoSuchElementException;
+
     Medecine getMedecineFromCIP(String CIP)
             throws NoSuchElementException;
 }
