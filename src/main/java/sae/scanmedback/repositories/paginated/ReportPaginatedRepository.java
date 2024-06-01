@@ -12,4 +12,5 @@ import sae.scanmedback.entities.User;
 @Repository
 public interface ReportPaginatedRepository extends ListPagingAndSortingRepository<Report, Integer> {
     Page<Report> findAllByUser(User user, Pageable pageable);
+    Page<Report> findAllByPharmacy(Pharmacy pharmacy, Pageable pageable);
 }

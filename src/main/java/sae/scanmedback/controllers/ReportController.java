@@ -56,6 +56,7 @@ public class ReportController {
         } catch(IndexOutOfBoundsException | UsernameNotFoundException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }

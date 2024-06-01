@@ -42,13 +42,32 @@ public class ReportService implements IReportService {
         if (page < 0)
             throw new IndexOutOfBoundsException("PIN;Page index negative");
 
-        return reportPaginatedRepository.findAllByUser(user, PageRequest.of(page, 5, Sort.by("submission_date").descending()));
+        return reportPaginatedRepository.findAllByUser(user, PageRequest.of(page, 5, Sort.by("submissionDate").descending()));
+    }
+
+    @Override
+    public Page<Report> getAllReportsFromPharmacy(Pharmacy pharmacy, int page) throws IndexOutOfBoundsException, NoSuchElementException {
+        if (page < 0)
+            throw new IndexOutOfBoundsException("PIN;Page index negative");
+
+        return reportPaginatedRepository.findAllByPharmacy(pharmacy, PageRequest.of(page, 5, Sort.by("submissionDate").descending()));
     }
 
     @Override
     public Report getReport(int id, User user)
         throws NoSuchElementException {
         Optional<Report> report = reportRepository.findByIdAndUser(id, user);
+
+        if (report.isEmpty())
+            throw new NoSuchElementException("INF;Could not find the report");
+
+        return report.get();
+    }
+
+    @Override
+    public Report getReportById(int id)
+        throws NoSuchElementException {
+        Optional<Report> report = reportRepository.findById(id);
 
         if (report.isEmpty())
             throw new NoSuchElementException("INF;Could not find the report");
@@ -80,16 +99,28 @@ public class ReportService implements IReportService {
         if (page < 0)
             throw new IndexOutOfBoundsException("PIN;Page index negative");
 
-        return reportStateChangePaginatedRepository.findAllByReport(report, PageRequest.of(page, 5, Sort.by("action_date").descending()));
+        return reportStateChangePaginatedRepository.findAllByReport(report, PageRequest.of(page, 5, Sort.by("actionDate").descending()));
     }
 
     @Override
     public ReportStateChange getLastChange(Report report) throws NoSuchElementException {
-        Optional<ReportStateChange> rsc = reportStateChangeRepository.findTopByReportOrderByActionDate(report);
+        Optional<ReportStateChange> rsc = reportStateChangeRepository.findTopByReportOrderByActionDateDesc(report);
 
         if (rsc.isEmpty())
             throw new NoSuchElementException("INF;Could not find any state change.");
 
         return rsc.get();
+    }
+
+    @Override
+    public void changeState(Report report, ReportState newState) {
+        ReportStateChange newStateChange = new ReportStateChange();
+
+        newStateChange.setNewState(newState);
+        newStateChange.setActionDate(new Timestamp(new Date().getTime()));
+        newStateChange.setOldState(this.getLastChange(report).getNewState());
+        newStateChange.setReport(report);
+
+        reportStateChangeRepository.save(newStateChange);
     }
 }

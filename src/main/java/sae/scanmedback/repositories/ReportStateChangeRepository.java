@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ReportStateChangeRepository extends JpaRepository<ReportStateChange, Integer> {
-    Optional<ReportStateChange> findTopByReportOrderByActionDate(Report report);
+    Optional<ReportStateChange> findTopByReportOrderByActionDateDesc(Report report);
 }
