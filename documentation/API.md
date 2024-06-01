@@ -73,7 +73,7 @@ HTTP verb: `DELETE`
 ```
 
 ### /user/edit
-Edits the user's informations and preferences.  
+Edits the user's information and preferences.  
 HTTP verb: `PATCH`
 #### Request
 > Every field is optional, but you must fill at least one to get a successful request.
@@ -96,7 +96,7 @@ HTTP verb: `PATCH`
 ```
 
 ### /user/info
-Gets the user informations and preferences.  
+Gets the user information and preferences.  
 HTTP verb: `GET`
 #### Responses
 ##### 200
@@ -256,3 +256,88 @@ HTTP verb: `POST`
 	"message": "Report successfully created."
 }
 ```
+
+## /admin
+### /admin/pharmacy/`id`/reports
+Lists all reports from a pharmacy, in a paginated way.  
+HTTP verb: `GET`
+#### Request
+##### URL
+- `id`: a pharmacy id.
+##### Query parameters
+| Parameter | Value                            |
+|-----------|----------------------------------|
+| page      | int (the page to display)        |
+#### Response
+##### 200
+```json
+{
+	"status": "success",
+	"data": {
+		"items": [
+			{
+				"submissionDate": "2024-06-01T10:28:19.005+00:00",
+				"id": 25,
+				"pharmacyId": 1,
+				"currentState": "submitted",
+				"cip": "3400935955838"
+			},
+			{
+				"submissionDate": "2024-06-01T10:28:18.850+00:00",
+				"id": 24,
+				"pharmacyId": 1,
+				"currentState": "submitted",
+				"cip": "3400935955838"
+			},
+			{
+				"submissionDate": "2024-06-01T10:28:18.685+00:00",
+				"id": 23,
+				"pharmacyId": 1,
+				"currentState": "submitted",
+				"cip": "3400935955838"
+			},
+			{
+				"submissionDate": "2024-06-01T10:28:18.519+00:00",
+				"id": 22,
+				"pharmacyId": 1,
+				"currentState": "submitted",
+				"cip": "3400935955838"
+			},
+			{
+				"submissionDate": "2024-06-01T10:28:18.364+00:00",
+				"id": 21,
+				"pharmacyId": 1,
+				"currentState": "submitted",
+				"cip": "3400935955838"
+			}
+		],
+		"totalPageNumber": 3,
+		"currentPage": 0,
+		"lastPage": false
+	},
+	"message": null
+}
+```
+### /admin/report/`id`/change_state
+Changes a report state.  
+HTTP verb: `POST`
+#### Request
+##### URL
+- `id`: a pharmacy id.
+##### Json
+```json
+{
+  "newState": ReportState
+}
+```
+ReportState values: "submitted", "rejected", "resupplying", "resupplied"
+#### Response
+##### 200
+```json
+{
+  "status": "success",
+  "data": null,
+  "message": "Report state added"
+}
+```
+
