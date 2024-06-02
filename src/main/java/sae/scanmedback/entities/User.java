@@ -23,6 +23,10 @@ public class User implements UserDetails {
     @Column(name = "email", unique = true)
     private String email;
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
     @Column(name = "is_admin")
     private boolean isAdmin;
 
