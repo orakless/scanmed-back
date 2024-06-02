@@ -1,4 +1,4 @@
-package sae.scanmedback.security;
+package sae.scanmedback.utilities;
 
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import sae.scanmedback.errors.InvalidPasswordException;

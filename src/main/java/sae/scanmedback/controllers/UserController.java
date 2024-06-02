@@ -1,8 +1,10 @@
 package sae.scanmedback.controllers;
 
+import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +20,7 @@ import sae.scanmedback.errors.EmailAlreadyUsedException;
 import sae.scanmedback.errors.EmptyDTOException;
 import sae.scanmedback.errors.InvalidPasswordException;
 import sae.scanmedback.services.IAuthService;
+import sae.scanmedback.services.IMailService;
 import sae.scanmedback.services.IUserService;
 
 @RestController
@@ -25,10 +28,13 @@ import sae.scanmedback.services.IUserService;
 public class UserController {
     private final IUserService userService;
     private final IAuthService authService;
+    private final IMailService mailService;
 
-    public UserController(final IUserService userService, final IAuthService authService) {
+    public UserController(final IUserService userService, final IAuthService authService,
+                          final IMailService mailService) {
         this.userService = userService;
         this.authService = authService;
+        this.mailService = mailService;
     }
 
     @DeleteMapping(path = "revoke",
@@ -51,7 +57,13 @@ public class UserController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<IResponse> delete() {
         Authentication userAuth = SecurityContextHolder.getContext().getAuthentication();
-        userService.deleteUserByEmail((String)userAuth.getPrincipal());
+        String email = (String) userAuth.getPrincipal();
+        userService.deleteUserByEmail(email);
+        try {
+            mailService.sendAccountDeletionMail(email);
+        } catch (MailException | MessagingException ex) {
+            System.err.println(ex.getMessage());
+        }
         return new ResponseEntity<>(
                 new ValidResponse("success",
                         null,

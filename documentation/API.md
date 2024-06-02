@@ -48,6 +48,45 @@ HTTP verb: `POST`
   "message": "Token generated"
 }
 ```
+
+### /auth/password_reset/request
+Requests a password reset. It will send an email to the provided address if an account exists.   
+HTTP verb: `POST`
+#### Request
+```json
+{
+  "email": String
+}
+```
+#### Responses
+##### 200
+```json
+{
+  "status": "success",
+  "data": null,
+  "message": "If an account with this email exists, a mail has been sent."
+}
+```
+### /auth/password_reset
+Resets the password associated to the provided email. You need to request a password reset before.
+HTTP verb: `POST`
+#### Request
+```json
+{
+  "email": String,
+  "token": String,
+  "newPassword": String
+}
+```
+#### Responses
+##### 200
+```json
+{
+  "status": "success",
+  "data": null,
+  "message": "Password changed successfully."
+}
+```
 ---
 > All the endpoints after this point needs authentication.  
 > Authentication works by putting `X-Email` and `X-Token` header in your requests. The `X-Email` is the account's email address, and the `X-Token` the token you get by using the `/auth/login` endpoint.
