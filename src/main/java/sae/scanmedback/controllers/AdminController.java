@@ -1,8 +1,10 @@
 package sae.scanmedback.controllers;
 
+import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,11 +17,14 @@ import sae.scanmedback.api.response.data.PageData;
 import sae.scanmedback.api.response.data.ResponseReportDTO;
 import sae.scanmedback.entities.Pharmacy;
 import sae.scanmedback.entities.Report;
+import sae.scanmedback.entities.ReportStateChange;
 import sae.scanmedback.entities.User;
 import sae.scanmedback.services.IDataService;
+import sae.scanmedback.services.IMailService;
 import sae.scanmedback.services.IReportService;
 import sae.scanmedback.services.IUserService;
 import sae.scanmedback.utilities.ConversionUtilities;
+import sae.scanmedback.utilities.TranslationUtilities;
 
 import java.util.NoSuchElementException;
 
@@ -30,10 +35,13 @@ public class AdminController {
     private final IReportService reportService;
     private final IDataService dataService;
 
-    public AdminController(IUserService userService, IReportService reportService, IDataService dataService) {
+    private final IMailService mailService;
+    public AdminController(IUserService userService, IReportService reportService, IDataService dataService,
+                           IMailService mailService) {
         this.userService = userService;
         this.reportService = reportService;
         this.dataService = dataService;
+        this.mailService = mailService;
     }
 
     @GetMapping(path = "pharmacy/{pharmacyId}/reports",
@@ -80,6 +88,14 @@ public class AdminController {
                 );
             Report report = reportService.getReportById(id);
             reportService.changeState(report, infos.getNewState());
+
+            try {
+                User reportUser = report.getUser();
+                ReportStateChange lastState = reportService.getLastChange(report);
+                mailService.sendStateChangeMail(reportUser, report, lastState);
+            } catch (MailException | MessagingException ex) {
+                System.err.println(ex.getMessage());
+            }
             return new ResponseEntity<>(new ValidResponse(
                     "success",
                     null,

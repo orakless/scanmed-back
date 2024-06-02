@@ -1,7 +1,7 @@
 package sae.scanmedback.entities;
 
 import jakarta.persistence.*;
-import sae.scanmedback.security.TokenUtilities;
+import sae.scanmedback.utilities.TokenUtilities;
 
 @Entity
 @IdClass(TokenId.class)

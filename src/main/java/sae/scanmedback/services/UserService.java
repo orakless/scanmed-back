@@ -12,11 +12,12 @@ import sae.scanmedback.errors.EmptyDTOException;
 import sae.scanmedback.errors.InvalidPasswordException;
 import sae.scanmedback.repositories.TokenRepository;
 import sae.scanmedback.repositories.UserRepository;
-import sae.scanmedback.security.PasswordUtilities;
+import sae.scanmedback.utilities.PasswordUtilities;
 
 @Service
 @Transactional
 public class UserService implements IUserService {
+    private final static int DEFAULT_AVATAR = 1;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     public UserService(final UserRepository userRepository, final TokenRepository tokenRepository) {
@@ -34,6 +35,7 @@ public class UserService implements IUserService {
         newUser.setPassword(
                 PasswordUtilities.hashPassword(
                         PasswordUtilities.validatePassword(infos.getPassword())));
+        newUser.setAvatar(DEFAULT_AVATAR);
 
         return userRepository.save(newUser);
     }
