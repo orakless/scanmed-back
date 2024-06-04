@@ -91,8 +91,10 @@ public class AdminController {
 
             try {
                 User reportUser = report.getUser();
-                ReportStateChange lastState = reportService.getLastChange(report);
-                mailService.sendStateChangeMail(reportUser, report, lastState);
+                if (reportUser.acceptsEmails()) {
+                    ReportStateChange lastState = reportService.getLastChange(report);
+                    mailService.sendStateChangeMail(reportUser, report, lastState);
+                }
             } catch (MailException | MessagingException ex) {
                 System.err.println(ex.getMessage());
             }
