@@ -9,7 +9,17 @@ public class EditDTO {
     String email;
     Boolean acceptsEmails;
 
+    Integer avatar;
+
     public EditDTO() {}
+    public Integer getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Integer avatar) {
+        this.avatar = avatar;
+    }
+
 
     public String getUsername() {
         return username;

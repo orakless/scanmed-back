@@ -67,7 +67,9 @@ public class AdminController {
                     data,
                     null), HttpStatus.OK
             );
-        } catch (NoSuchElementException | IndexOutOfBoundsException e) {
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (IndexOutOfBoundsException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),
@@ -103,7 +105,9 @@ public class AdminController {
                     null,
                     "Report state added"
             ), HttpStatus.CREATED);
-        } catch (UsernameNotFoundException | NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (UsernameNotFoundException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),

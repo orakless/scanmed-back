@@ -24,6 +24,28 @@ HTTP verb: `POST`
   "message": "User created"
 }
 ```
+##### 400 Bad Request
+There are two responses that uses Bad Request as an HTTP Status Code:
+You should refer to HTTP Status Code and status in order to handle the error.
+###### PNV (Invalid password)
+A password must meet the following requirements: min. height of 8 characters, (at least) one upper case letter, one lower case letter, one number and one special character. 
+```json
+{
+  "status": "PNV",
+  "data": null,
+  "message": "Password does not meet requirements"
+}
+```
+###### EAU (Email already used)
+This email is already associated with an account.
+```json
+{
+  "status": "EAU",
+  "data": null,
+  "message": "Email already used"
+}
+```
+
 
 ### /auth/login
 Logs a user in. Returns a token that you can then use to access the other endpoints.  
@@ -46,6 +68,16 @@ HTTP verb: `POST`
     "token": "YOUR_TOKEN"
   },
   "message": "Token generated"
+}
+```
+##### 401 Unauthorized
+###### Invalid credentials
+This means either the user does not exists, either the credentials are invalid.
+```json
+{
+  "status": "CNV",
+  "data": null,
+  "message": "Invalid credentials"
 }
 ```
 
@@ -87,6 +119,27 @@ HTTP verb: `POST`
   "message": "Password changed successfully."
 }
 ```
+##### 400 Bad request
+###### PNV (Invalid password)
+A password must meet the following requirements: min. height of 8 characters, (at least) one upper case letter, one lower case letter, one number and one special character.
+```json
+{
+  "status": "PNV",
+  "data": null,
+  "message": "Password does not meet requirements"
+}
+```
+###### EAU (Email already used)
+This email is already associated with an account.
+```json
+{
+  "status": "EAU",
+  "data": null,
+  "message": "Email already used"
+}
+```
+
+
 ---
 > All the endpoints after this point needs authentication.  
 > Authentication works by putting `X-Email` and `X-Token` header in your requests. The `X-Email` is the account's email address, and the `X-Token` the token you get by using the `/auth/login` endpoint.
@@ -121,7 +174,8 @@ HTTP verb: `PATCH`
   "email": String,
   "password": String,
   "device": String,
-  "acceptsEmails": boolean
+  "acceptsEmails": boolean,
+  "avatar": int
 }
 ```
 #### Responses 
@@ -133,7 +187,25 @@ HTTP verb: `PATCH`
   "message": "User modified"
 }
 ```
-
+##### 400 Bad request
+###### PNV (Invalid password)
+A password must meet the following requirements: min. height of 8 characters, (at least) one upper case letter, one lower case letter, one number and one special character.
+```json
+{
+  "status": "PNV",
+  "data": null,
+  "message": "Password does not meet requirements"
+}
+```
+###### EAU (Email already used)
+This email is already associated with an account.
+```json
+{
+  "status": "EAU",
+  "data": null,
+  "message": "Email already used"
+}
+```
 ### /user/info
 Gets the user information and preferences.  
 HTTP verb: `GET`
@@ -181,7 +253,15 @@ HTTP verb: `GET`
     "message": null
 }
 ```
-
+##### 400 Bad request
+###### PIN (Page index negative)
+```json
+{
+  "status": "PIN",
+  "data": null,
+  "message": "Page index negative"
+}
+```
 ### /city/*`id`*/pharmacies
 Gets all pharmacies from a city in a paginated way.
 HTTP verb: `GET`
@@ -211,6 +291,24 @@ HTTP verb: `GET`
     "lastPage": true
   },
   "message": null
+}
+```
+##### 400 Bad request
+###### PIN (Page index negative)
+```json
+{
+  "status": "PIN",
+  "data": null,
+  "message": "Page index negative"
+}
+```
+##### 404 Not found
+###### INF (Id not found)
+```json
+{
+  "status": "INF",
+  "data": null,
+  "message": "Could not find the city"
 }
 ```
 
@@ -245,7 +343,15 @@ HTTP verb: `GET`
   "message": null
 }
 ```
-
+##### 400 Bad request
+###### PIN (Page index negative)
+```json
+{
+  "status": "PIN",
+  "data": null,
+  "message": "Page index negative"
+}
+```
 ### /reports/`id`/history
 Gets the history of state changes for a given report.  
 HTTP verb: `GET`
@@ -276,6 +382,24 @@ HTTP verb: `GET`
 	"message": null
 }
 ```
+##### 400 Bad request
+###### PIN (Page index negative)
+```json
+{
+  "status": "PIN",
+  "data": null,
+  "message": "Page index negative"
+}
+```
+##### 404 Not found
+###### INF (Id not found)
+```json
+{
+  "status": "INF",
+  "data": null,
+  "message": "Could not find the report"
+}
+```
 ### /reports/new 
 Creates a new report
 HTTP verb: `POST`
@@ -293,6 +417,22 @@ HTTP verb: `POST`
 	"status": "success",
 	"data": null,
 	"message": "Report successfully created."
+}
+```
+##### 404 Not found
+###### INF (Id not found)
+```json
+{
+  "status": "INF",
+  "data": null,
+  "message": "Could not find the pharmacy"
+}
+```
+```json
+{
+  "status": "INF",
+  "data": null,
+  "message": "Could not find the medecine"
 }
 ```
 
@@ -357,6 +497,33 @@ HTTP verb: `GET`
 	"message": null
 }
 ```
+##### 421 Unauthorized
+###### NER (Not Enough Rights)
+```json
+{
+  "status": "NER",
+  "data": null,
+  "message": "You do not have enough rights for this"
+}
+```
+##### 400 Bad request
+###### PIN (Page index negative)
+```json
+{
+  "status": "PIN",
+  "data": null,
+  "message": "Page index negative"
+}
+```
+##### 404 Not found
+###### INF (Id not found)
+```json
+{
+  "status": "INF",
+  "data": null,
+  "message": "Could not find the pharmacy"
+}
+```
 ### /admin/report/`id`/change_state
 Changes a report state.  
 HTTP verb: `POST`
@@ -379,4 +546,20 @@ ReportState values: "submitted", "rejected", "resupplying", "resupplied"
   "message": "Report state added"
 }
 ```
-
+##### 421 Unauthorized
+###### NER (Not Enough Rights)
+```json
+{
+  "status": "NER",
+  "data": null,
+  "message": "You do not have enough rights for this"
+}
+```
+##### 404 Not found
+###### INF (Id not found)
+```json
+{
+  "status": "INF",
+  "data": null,
+  "message": "Could not find the report"
+}

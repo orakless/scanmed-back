@@ -55,7 +55,7 @@ public class CityController {
                     null
             ), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -72,7 +72,9 @@ public class CityController {
                     "success",
                     data,
                     null), HttpStatus.OK);
-        } catch (NoSuchElementException | IndexOutOfBoundsException e) {
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (IndexOutOfBoundsException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),

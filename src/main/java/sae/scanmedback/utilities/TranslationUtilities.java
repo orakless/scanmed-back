@@ -10,7 +10,7 @@ public class TranslationUtilities {
                 translated = "Soumis";
             }
             case rejected -> {
-                translated = "Rejetté";
+                translated = "Rejeté";
             }
             case resupplying -> {
                 translated = "En cours de réapprovisionnement";

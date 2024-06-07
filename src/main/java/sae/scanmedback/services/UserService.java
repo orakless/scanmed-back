@@ -10,6 +10,7 @@ import sae.scanmedback.entities.User;
 import sae.scanmedback.errors.EmailAlreadyUsedException;
 import sae.scanmedback.errors.EmptyDTOException;
 import sae.scanmedback.errors.InvalidPasswordException;
+import sae.scanmedback.repositories.AvatarRepository;
 import sae.scanmedback.repositories.TokenRepository;
 import sae.scanmedback.repositories.UserRepository;
 import sae.scanmedback.utilities.PasswordUtilities;
@@ -20,14 +21,19 @@ public class UserService implements IUserService {
     private final static int DEFAULT_AVATAR = 1;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
-    public UserService(final UserRepository userRepository, final TokenRepository tokenRepository) {
+    private final AvatarRepository avatarRepository;
+    public UserService(final UserRepository userRepository, final TokenRepository tokenRepository, AvatarRepository avatarRepository) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+        this.avatarRepository = avatarRepository;
     }
 
     @Override
-    public User registerNewUser(RegisterDTO infos) throws InvalidPasswordException {
+    public User registerNewUser(RegisterDTO infos) throws InvalidPasswordException, EmailAlreadyUsedException {
         User newUser = new User();
+
+        if (userRepository.findByEmail(infos.getEmail()) != null)
+            throw new EmailAlreadyUsedException("EAU;Email already used.");
 
         newUser.setUsername(infos.getUsername());
         newUser.setEmail(infos.getEmail());
@@ -74,7 +80,7 @@ public class UserService implements IUserService {
         User user = userRepository.findByEmail(email);
 
         if (user == null)
-            throw new UsernameNotFoundException("UNF;User not found");
+            throw new UsernameNotFoundException("CNV;Invalid credentials");
 
         if (infos.getAcceptsEmails() != null)
             user.setAcceptsEmails(infos.getAcceptsEmails());
@@ -87,6 +93,10 @@ public class UserService implements IUserService {
 
         if (infos.getUsername() != null) {
             user.setUsername(infos.getUsername());
+        }
+
+        if (infos.getAvatar() != null && avatarRepository.existsById(infos.getAvatar())) {
+            user.setAvatar(infos.getAvatar());
         }
 
         if (infos.getPassword() != null) {

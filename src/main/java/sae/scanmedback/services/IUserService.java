@@ -9,7 +9,7 @@ import sae.scanmedback.errors.EmptyDTOException;
 import sae.scanmedback.errors.InvalidPasswordException;
 
 public interface IUserService {
-    User registerNewUser(RegisterDTO infos) throws InvalidPasswordException;
+    User registerNewUser(RegisterDTO infos) throws InvalidPasswordException, EmailAlreadyUsedException;
     User loadUserByEmail(String email) throws UsernameNotFoundException;
     User login(String email, String password);
     void deleteUserByEmail(String email);

@@ -77,7 +77,9 @@ public class ReportController {
                     data,
                     null), HttpStatus.OK
             );
-        } catch (NoSuchElementException | IndexOutOfBoundsException | UsernameNotFoundException e) {
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (IndexOutOfBoundsException | UsernameNotFoundException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),
@@ -98,7 +100,9 @@ public class ReportController {
             return new ResponseEntity<>(new ValidResponse("success",
                     null,
                     "Report successfully created."), HttpStatus.CREATED);
-        } catch (NoSuchElementException | UsernameNotFoundException e) {
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (UsernameNotFoundException e) {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(new ErrorResponse("UNK;We could not process your request."),

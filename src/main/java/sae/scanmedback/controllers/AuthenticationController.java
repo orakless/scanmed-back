@@ -52,8 +52,8 @@ public class AuthenticationController {
             return new ResponseEntity<>(
                     new ValidResponse("success", null, "User created"),
                     HttpStatus.CREATED);
-        } catch (InvalidPasswordException e) {
-            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.CONFLICT);
+        } catch (InvalidPasswordException | EmailAlreadyUsedException e) {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(new ErrorResponse("UNK;Internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -65,7 +65,7 @@ public class AuthenticationController {
             User loggedUser = userService.login(infos.getEmail(), infos.getPassword());
 
             if (loggedUser == null)
-                return new ResponseEntity<>(new ErrorResponse("UME;User not found"), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new ErrorResponse("CNV;Invalid credentials"), HttpStatus.UNAUTHORIZED);
 
             Token newToken = authService.generateToken(loggedUser, infos.getDevice());
 

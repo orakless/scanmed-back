@@ -41,34 +41,34 @@ public class MailService implements IMailService {
                         + "</b> à l'état <b>"
                         + TranslationUtilities.translateReportState(reportStateChange.getNewState())
                         + "</b>.<br/>Nous restons disponible pour toute information annexe dont vous " +
-                        "pourriez avoir besoin.<br/>Cordialement,<br/>L'équipe Scanmed";
+                        "pourriez avoir besoin.<br/>Cordialement,<br/>L'équipe ScanMed";
         sendMailTo(user.getUsername(), subject, body);
     }
 
     @Override
     public void sendAccountCreationMail(User user) throws MailException, MessagingException {
-        String subject = "Bienvenue sur Scanmed, " + user.getDisplayName();
-        String body = "Bonjour,<br/>Votre compte Scanmed @" + user.getDisplayName() + " a bien été créé."
+        String subject = "Bienvenue sur ScanMed, " + user.getDisplayName();
+        String body = "Bonjour,<br/>Votre compte ScanMed @" + user.getDisplayName() + " a bien été créé."
                 + "<br/>Nous restons disponible pour toute information annexe dont vous pourriez avoir besoin. <br>"
-                + "Cordialement,<br/>L'équipe Scanmed";
+                + "Cordialement,<br/>L'équipe ScanMed";
         sendMailTo(user.getUsername(), subject, body);
     }
 
     @Override
     public void sendTokenGenerationMail(User user, Token token) throws MailException, MessagingException {
-        String subject = "Nouvel appareil enregistré sur Scanmed";
+        String subject = "Nouvel appareil enregistré sur ScanMed";
         String body = "Bonjour,<br/>Un nouvel appareil <b>"+token.getDevice()+"</b> a été enregistré sur votre compte "
-                + "Scanmed. Si cette connexion ne provient pas de vous, veuillez changer votre mot de passe et annuler "
-                + "la connexion de cet appareil depuis votre application.<br/>Cordialement,<br/>L'équipe Scanmed";
+                + "ScanMed. Si cette connexion ne provient pas de vous, veuillez changer votre mot de passe et annuler "
+                + "la connexion de cet appareil depuis votre application.<br/>Cordialement,<br/>L'équipe ScanMed";
         sendMailTo(user.getUsername(), subject, body);
     }
 
     @Override
     public void sendAccountDeletionMail(String email) throws MailException, MessagingException {
-        String subject = "Suppression de votre compte Scanmed";
+        String subject = "Suppression de votre compte ScanMed";
         String body = "Bonjour,<br/>Suite à votre demande de suppression de compte, nous venons de "
                 + "supprimer toutes les données vous concernant de notre base de données.<br>Cordialement," +
-                "<br/>L'équipe Scanmed";
+                "<br/>L'équipe ScanMed";
         sendMailTo(email, subject, body);
     }
 
@@ -77,7 +77,7 @@ public class MailService implements IMailService {
         String subject = "Demande de réinitialisation du mot de passe";
         String body = "Bonjour,<br/>Le code pour réinitialiser votre mot de passe est <b>"+ token +"</b>.<br/><b>Vous n'êtes"
                 + "pas à l'origine de cette demande ?</b><br/><br/>Il est possible qu'une personne ait accidentellement"
-                + " saisi votre e-mail sur le formulaire.<br/>Cordialement,<br/>L'équipe Scanmed";
+                + " saisi votre e-mail sur le formulaire.<br/>Cordialement,<br/>L'équipe ScanMed";
         sendMailTo(email, subject, body);
     }
 
@@ -85,7 +85,7 @@ public class MailService implements IMailService {
     public void sendPasswordResetConfirmationMail(String email) throws MailException, MessagingException {
         String subject = "Confirmation de la réinitialisation de votre mot de passe";
         String body = "Bonjour,<br/>Votre mot de passe a bien été réinitialisé. Vous pouvez désormais vous connecter"
-                + " avec.<br/>Cordialement,<br/>L'équipe Scanmed";
+                + " avec.<br/>Cordialement,<br/>L'équipe ScanMed";
         sendMailTo(email, subject, body);
     }
 }
