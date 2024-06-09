@@ -1,18 +1,13 @@
 package sae.scanmedback.controllers;
 
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sae.scanmedback.api.response.ErrorResponse;
 import sae.scanmedback.api.response.IResponse;
 import sae.scanmedback.api.response.ValidResponse;
-import sae.scanmedback.api.response.data.PageData;
-import sae.scanmedback.entities.City;
 import sae.scanmedback.entities.Medecine;
-import sae.scanmedback.entities.Pharmacy;
 import sae.scanmedback.services.IDataService;
 
 import java.util.NoSuchElementException;
