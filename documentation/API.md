@@ -223,10 +223,34 @@ HTTP verb: `GET`
   "message": null
 }
 ```
-
+## /medecine
+### /medecine/`id`
+Gets this medecine information if it does exists.  
+HTTP verb: `GET`
+#### Responses
+##### 200
+```json
+{
+  "status": "success",
+  "data": {
+    "name": "Medecine name",
+    "cip": "CIP"
+  },
+  "message": null
+}
+```
+##### 404 Not found
+###### INF (Id not found)
+```json
+{
+  "status": "INF",
+  "data": null,
+  "message": "Could not find the medecine"
+}
+```
 ## /city
 ### /city 
-Gets all cities in a paginated way.
+Gets all cities in a paginated way.  
 HTTP verb: `GET`
 #### Request
 ##### Query parameters
@@ -263,7 +287,7 @@ HTTP verb: `GET`
 }
 ```
 ### /city/*`id`*/pharmacies
-Gets all pharmacies from a city in a paginated way.
+Gets all pharmacies from a city in a paginated way.  
 HTTP verb: `GET`
 #### Request
 ##### URL
@@ -401,7 +425,7 @@ HTTP verb: `GET`
 }
 ```
 ### /reports/new 
-Creates a new report
+Creates a new report.  
 HTTP verb: `POST`
 #### Request
 ```json
