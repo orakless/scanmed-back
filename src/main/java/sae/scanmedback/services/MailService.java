@@ -76,7 +76,7 @@ public class MailService implements IMailService {
     public void sendPasswordResetMail(String email, String token) throws MailException, MessagingException {
         String subject = "Demande de réinitialisation du mot de passe";
         String body = "Bonjour,<br/>Le code pour réinitialiser votre mot de passe est <b>"+ token +"</b>.<br/><b>Vous n'êtes"
-                + "pas à l'origine de cette demande ?</b><br/><br/>Il est possible qu'une personne ait accidentellement"
+                + " pas à l'origine de cette demande ?</b><br/><br/>Il est possible qu'une personne ait accidentellement"
                 + " saisi votre e-mail sur le formulaire.<br/>Cordialement,<br/>L'équipe ScanMed";
         sendMailTo(email, subject, body);
     }
