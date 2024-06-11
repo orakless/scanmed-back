@@ -54,6 +54,6 @@ public class EditDTO {
     }
 
     public boolean isEmpty() {
-        return (username == null && password == null && email == null && acceptsEmails == null);
+        return (username == null && password == null && email == null && acceptsEmails == null && avatar == null);
     }
 }
