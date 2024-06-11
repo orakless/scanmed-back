@@ -206,7 +206,7 @@ This email is already associated with an account.
   "message": "Email already used"
 }
 ```
-### /user/info
+### /user/infos
 Gets the user information and preferences.  
 HTTP verb: `GET`
 #### Responses
@@ -223,6 +223,20 @@ HTTP verb: `GET`
   "message": null
 }
 ```
+
+### /user/delete
+Deletes an user account.  
+HTTP verb: `DELETE`
+#### Responses
+##### 200
+```json 
+{
+  "status": "success",
+  "data": null,
+  "message": "User deleted"
+}
+```
+
 ## /medecine
 ### /medecine/`id`
 Gets this medecine information if it does exists.  
