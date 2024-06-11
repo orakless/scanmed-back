@@ -171,6 +171,7 @@ HTTP verb: `PATCH`
 > Every field is optional, but you must fill at least one to get a successful request.
 ```json
 {
+  "username": String,
   "email": String,
   "password": String,
   "device": String,
